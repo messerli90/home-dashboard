@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    'unsplash' => [
+        'applicationId' => env('UNSPLASH_APP_ID'),
+        'secret' => env('UNSPLASH_SECRET_KEY'),
+        'accessToken' => env('UNSPLASH_ACCESS_KEY'),
+        'callbackUrl' => env('UNSPLASH_CALLBACK_URL'),
+    ],
+
+    'openweather' => [
+        'api_key' => env('OPENWEATHER_API_KEY'),
+    ],
 ];

@@ -11,6 +11,9 @@ export default defineConfig({
         tailwindcss(),
     ],
     server: {
-        host: true
+        host: true,
+        // hmr: {
+        //     host: '192.168.0.126',
+        // },
     }
 });
