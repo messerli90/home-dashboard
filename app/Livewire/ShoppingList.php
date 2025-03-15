@@ -29,7 +29,8 @@ class ShoppingList extends Component
     public function fetchItems(): Collection
     {
         $items = collect([]);
-        $ttl = now()->addHour(); // TODO: Make this shorter after testing
+        $ttl = now()->addMinutes(5);
+
         $collection = Cache::remember('shopping-list', $ttl, function () {
             return $this->notion->database(config('services.notion.shopping_db_id', ''))->query();
         });

@@ -12,7 +12,7 @@
                 <livewire:weather-widget />
             </div>
 
-            <div class="w-full grid grid-cols-2 gap-6">
+            <div x-ref="main-grid" class="w-full grid grid-cols-2 gap-6">
                 <div class="max-h-[400px] overflow-hidden">
                     <livewire:meals-list />
                 </div>
@@ -25,7 +25,7 @@
                 </div>
             </div>
 
-            <div x-show="showExtraWidgets" id="extra-widgets" class="flex-1 bg-red-200">
+            <div x-show="showExtraWidgets" x-ref="extra-widgets" class="flex-1 bg-red-200">
                 <div class="p-4 bg-neutral-100/50 rounded-lg shadow-md max-h-96">
                     <div class="h-full flex items-center justify-center">
                         <img
@@ -49,13 +49,15 @@
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('home', () => ({
+                mainGridHeight: 0,
                 extraWidgetsHeight: 0,
                 showExtraWidgets: false,
 
                 init() {
                     this.updateHeight();
 
-                    if (this.extraWidgetsHeight > 200) {
+
+                    if (this.mainGridHeight < 450) {
                         this.showExtraWidgets = true;
                     } else {
                         this.showExtraWidgets = false;
@@ -66,9 +68,8 @@
                     });
                 },
                 updateHeight() {
-                    const height = document.getElementById('extra-widgets').clientHeight
-                    console.log('Height updated:', height);
-                    this.extraWidgetsHeight = height;
+                    this.extraWidgetsHeight = this.$refs['extra-widgets'].clientHeight;
+                    this.mainGridHeight = this.$refs['main-grid'].clientHeight;
                 },
             }));
         })

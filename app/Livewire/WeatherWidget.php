@@ -16,14 +16,20 @@ class WeatherWidget extends Component
     public function mount()
     {
         $this->api_key = config('services.openweather.api_key');
-        $this->initWeatherApi();
-        $this->fetchWeather();
+//        $this->initWeatherApi();
+//        $this->fetchWeather();
 //        $this->weatherData = collect($this->fakeWeather());
+//        $this->icon_path = $this->getIcon($this->weatherData['weather'][0]['icon']);
+
+        $this->weatherData = collect($this->fakeWeather());
         $this->icon_path = $this->getIcon($this->weatherData['weather'][0]['icon']);
     }
 
     public function getIcon($icon): string
     {
+        if (empty($icon)) {
+            return '';
+        }
         return "http://openweathermap.org/img/wn/{$icon}@2x.png";
     }
 
@@ -103,7 +109,7 @@ class WeatherWidget extends Component
 
         ray($response);
 
-        if ($response && $response->successful() && !is_int($response)) {
+        if ($response && $response->successful() && !is_int($response->json())) {
             $this->weatherData = collect($response->json());
         }
 

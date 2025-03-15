@@ -29,20 +29,20 @@ class MealsList extends Component
     public function fetchItems(): Collection
     {
         $items = collect([]);
-        $ttl = now()->addHour(); // TODO: Make this shorter after testing
-            try {
-        $collection = Cache::remember('meals-list', $ttl, function () {
-            return $this->notion->database(config('services.notion.meals_db_id', ''))->query();
-        });
+        $ttl = now()->addMinutes(5);
+        try {
+            $collection = Cache::remember('meals-list', $ttl, function () {
+                return $this->notion->database(config('services.notion.meals_db_id', ''))->query();
+            });
 
-        foreach ($collection->asCollection() as $item) {
-            $items->push([
-                'name' => $item->getTitle() ?? 'Missing Title',
-                'date' => $item->getProperty('Date')?->getStart() ?? null,
-                'notes' => $item->getProperty('Notes')->asText() ?? ''
-            ]);
+            foreach ($collection->asCollection() as $item) {
+                $items->push([
+                    'name' => $item->getTitle() ?? 'Missing Title',
+                    'date' => $item->getProperty('Date')?->getStart() ?? null,
+                    'notes' => $item->getProperty('Notes')->asText() ?? ''
+                ]);
 
-        }
+            }
         } catch (NotionException $e) {
             ray($e->getMessage());
             return collect();
@@ -53,13 +53,14 @@ class MealsList extends Component
 
     public function forceRefresh(): void
     {
+        ray('Force refresh meals list');
         $this->items = collect([]);
         Cache::forget('meals-list');
-        $this->initNotion();
     }
 
     public function render(): View
     {
+        $this->forceRefresh();
         if (!$this->notion) $this->initNotion();
 
         return view('livewire.meals-list', [

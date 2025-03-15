@@ -30,7 +30,7 @@ class TodosList extends Component
     public function fetchItems(): Collection
     {
         $items = collect([]);
-        $ttl = now()->addHour(); // TODO: Make this shorter after testing
+        $ttl = now()->addMinutes(5);
         try {
             $collection = Cache::remember('todos-list', $ttl, function () {
                 return $this->notion->database(config('services.notion.todos_db_id', ''))->query();

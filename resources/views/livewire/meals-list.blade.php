@@ -1,7 +1,7 @@
 <div class="">
     <h2 class="flex text-xl font-semibold text-neutral-900/90">
         <i class="mr-2">🥙</i> Meals
-        <button class="ml-auto" wire:click="forceRefresh">r</button>
+{{--        <button class="ml-auto" wire:click="forceRefresh">r</button>--}}
     </h2>
 
     <div>
