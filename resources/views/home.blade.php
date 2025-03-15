@@ -57,7 +57,7 @@
                     this.updateHeight();
 
 
-                    if (this.mainGridHeight < 450) {
+                    if (this.mainGridHeight < 400) {
                         this.showExtraWidgets = true;
                     } else {
                         this.showExtraWidgets = false;

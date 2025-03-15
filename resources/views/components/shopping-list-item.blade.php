@@ -13,6 +13,6 @@
         <span class="ml-auto text-neutral-600/90 text-xs">{{ $item['quantity'] }}</span>
     </div>
     @isset($item['notes'])
-        <p class="pl-2 text-xs line-clamp-2">{{ $item['notes'] }}</p>
+        <p class="mt-1 pl-2 text-xs line-clamp-2">{{ $item['notes'] }}</p>
     @endisset
 </li>
