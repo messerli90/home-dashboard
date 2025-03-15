@@ -4,20 +4,21 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 
 class WeatherWidget extends Component
 {
     private $api_key;
-    public $city = 'Laporte, US'; // Default city, change as needed
+    public $city = 'Fort Collins'; // Default city, change as needed
     public $weatherData = [];
     public $icon_path;
 
     public function mount()
     {
         $this->api_key = config('services.openweather.api_key');
-//        $this->initWeatherApi();
-//        $this->fetchWeather();
-        $this->weatherData = collect($this->fakeWeather());
+        $this->initWeatherApi();
+        $this->fetchWeather();
+//        $this->weatherData = collect($this->fakeWeather());
         $this->icon_path = $this->getIcon($this->weatherData['weather'][0]['icon']);
     }
 
@@ -85,26 +86,28 @@ class WeatherWidget extends Component
             'appid' => $this->api_key,
             'units' => 'metric',
         ]);
-        ray('initWeatherApi', $response->body());
     }
 
     private function fetchWeather(): void
     {
         $api_key = config('services.openweather.api_key');
 //        ?lat={lat}&lon={lon}&exclude={part}&appid={API key}
-        $response = Http::get("https://api.openweathermap.org/data/2.5/weather", [
-            'q' => $this->city,
-            'appid' => $api_key,
-            'units' => 'imperial',
-        ]);
 
-        ray($response->body());
+        $response = Cache::remember('weather', 60, function () use ($api_key) {
+            return Http::get("https://api.openweathermap.org/data/2.5/weather", [
+                'q' => $this->city,
+                'appid' => $api_key,
+                'units' => 'imperial',
+            ]);
+        });
 
-        if ($response->successful()) {
+        ray($response);
+
+        if ($response && $response->successful() && !is_int($response)) {
             $this->weatherData = collect($response->json());
         }
 
-//        ray($this->weatherData->toArray());
+        ray($this->weatherData->toArray());
     }
 
     public function render()

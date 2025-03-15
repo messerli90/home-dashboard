@@ -45,4 +45,11 @@ return [
     'openweather' => [
         'api_key' => env('OPENWEATHER_API_KEY'),
     ],
+
+    'notion' => [
+        'token' => env('NOTION_API_TOKEN'),
+        'shopping_db_id' => env('NOTION_SHOPPING_DB_ID'),
+        'meals_db_id' => env('NOTION_MEALS_DB_ID'),
+        'todos_db_id' => env('NOTION_TODOS_DB_ID'),
+    ],
 ];

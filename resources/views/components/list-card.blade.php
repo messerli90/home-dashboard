@@ -1,4 +1,4 @@
-<div class="p-4 bg-neutral-100/50 rounded-lg shadow-md">
+<div class="p-4 bg-neutral-100/50 rounded-lg shadow-sm">
     <h2 class="text-xl font-semibold text-neutral-900/90"><i class="mr-2">{{$icon ?? ''}}</i> {{ $title ?? '-' }}</h2>
 
     <div>

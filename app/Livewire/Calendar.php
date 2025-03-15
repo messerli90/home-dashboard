@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\View\View;
 use Carbon\CarbonInterface;
 use Spatie\GoogleCalendar\Event;
+use Spatie\GoogleCalendar\GoogleCalendar;
 
 class Calendar extends Component
 {
@@ -19,6 +20,8 @@ class Calendar extends Component
     public function mount(): void
     {
         $this->setMonthData(Carbon::now()->year, Carbon::now()->month);
+
+//        $this->getCalendars();
     }
 
     private function setMonthData($year, $month): void
@@ -74,5 +77,16 @@ class Calendar extends Component
 //        ray($events);
 //        ray($eventId);
         return view('livewire.calendar');
+    }
+
+    private function getCalendars()
+    {
+        try {
+            $events = Event::get(now(), now()->addMonths(1));
+            ray($events);
+        } catch (\Exception $e) {
+            ray($e->getMessage());
+            ray($e);
+        }
     }
 }

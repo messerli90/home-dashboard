@@ -8,9 +8,10 @@ use Illuminate\View\View;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use FiveamCode\LaravelNotionApi\Notion;
+use FiveamCode\LaravelNotionApi\Exceptions\NotionException;
 use FiveamCode\LaravelNotionApi\Exceptions\HandlingException;
 
-class ShoppingList extends Component
+class TodosList extends Component
 {
     private $notion;
 
@@ -30,27 +31,33 @@ class ShoppingList extends Component
     {
         $items = collect([]);
         $ttl = now()->addHour(); // TODO: Make this shorter after testing
-        $collection = Cache::remember('shopping-list', $ttl, function () {
-            return $this->notion->database(config('services.notion.shopping_db_id', ''))->query();
+        try {
+            $collection = Cache::remember('todos-list', $ttl, function () {
+                return $this->notion->database(config('services.notion.todos_db_id', ''))->query();
+            });
+
+
+            foreach ($collection->asCollection() as $item) {
+                $items->push([
+                    'name' => $item->getTitle() ?? 'No name',
+                    'status' => $item->getProperty('Status')->getContent()['name'] ?? false,
+                ]);
+
+            }
+        } catch (NotionException $e) {}
+
+        // Only show "In Progress" items
+        $items = $items->filter(function ($item) {
+            return $item['status'] === 'In progress';
         });
 
-        foreach ($collection->asCollection() as $item) {
-            $items->push([
-                'name' => $item->getTitle() ?? 'No name',
-                'quantity' => $item->getProperty('Quantity')->asText() ?? 'No quantity',
-                'notes' => $item->getProperty('Notes')->asText() ?? 'No notes',
-                'completed' => $item->getProperty('Completed')->isChecked() ?? false,
-            ]);
-
-        }
-
-        return $items->sortBy('completed');
+        return $items->sortBy('status');
     }
 
     public function forceRefresh(): void
     {
         $this->items = collect([]);
-        Cache::forget('shopping-list');
+        Cache::forget('todos-list');
         $this->initNotion();
     }
 
@@ -58,8 +65,8 @@ class ShoppingList extends Component
     {
         if (!$this->notion) $this->initNotion();
 
-        return view('livewire.shopping-list', [
-            'items' => $this->fetchItems(),
+        return view('livewire.todos-list', [
+            'items' => $this->fetchItems() ?? collect([]),
         ]);
     }
 }

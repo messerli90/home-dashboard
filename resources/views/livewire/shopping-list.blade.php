@@ -1,15 +1,21 @@
-{{--<x-list-card title="Shopping List" icon="🛒" :items="$items->toArray()" />--}}
+<div class="">
+    <h2 class="flex text-xl font-semibold text-neutral-900/90">
+        <i class="mr-2">🛒</i> Shopping List
+        <button class="ml-auto" wire:click="forceRefresh">r</button>
+    </h2>
 
-<div class="p-4 bg-neutral-100/50 rounded-lg shadow-md max-h-96">
-    <h2 class="text-xl font-semibold text-neutral-900/90"><i class="mr-2">🛒</i> Shopping List</h2>
-
-    <div>
-        <ul class="mt-2 ml-9 h-full grid grid-rows-8 grid-flow-col text-lg text-neutral-900/90">
-            @foreach($items as $item)
-                <li class="flex items-center justify-between">
-                    <span>{{ $item['name'] }}</span>
+    <div class="">
+        <ul class="relative mt-2 grid grid-cols-3 gap-3 text-lg text-neutral-900/90 ">
+            @forelse($items as $item)
+                <x-shopping-list-item :item="$item"/>
+            @empty
+                <li class="p-2 col-span-3 text-sm bg-neutral-100/50 rounded-lg shadow-sm">
+                    <div class="py-4 flex flex-col items-center justify-center gap-3">
+                        <img src="{{ asset('images/undraw_shopping.svg') }}" alt="No Shopping" class="h-16">
+                        <p class="text-neutral-700/90">Shopping list is empty</p>
+                    </div>
                 </li>
-            @endforeach
+            @endforelse
         </ul>
     </div>
 </div>

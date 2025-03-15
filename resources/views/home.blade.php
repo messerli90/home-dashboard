@@ -1,28 +1,38 @@
 @extends('layout')
 
 @section('content')
-<div class="relative h-full flex flex-col overflow-hidden">
+<div class="relative h-full flex flex-col overflow-hidden" x-data="home">
     <header class="z-20">
 
     </header>
-    <div class="p-8 flex-1 grid grid-cols-5 gap-8 z-20">
-        <div class="flex flex-col col-span-2 space-y-6">
+    <div class="p-8 flex-1 grid grid-cols-6 gap-12 z-20">
+        <div class="p-4 flex flex-col col-span-3 space-y-6">
             <div class="flex items-center justify-between">
                 <livewire:date-time-widget />
                 <livewire:weather-widget />
             </div>
 
             <div class="w-full grid grid-cols-2 gap-6">
-                <livewire:shopping-list />
-                <livewire:meals-list />
+                <div class="max-h-[400px] overflow-hidden">
+                    <livewire:meals-list />
+                </div>
+                <div>
+                    <livewire:todos-list />
+                </div>
+
+                <div class="col-start-1 col-span-2">
+                    <livewire:shopping-list />
+                </div>
             </div>
 
-            <div class="p-4 bg-neutral-100/50 rounded-lg shadow-md max-h-96">
-                <div class="h-full flex items-center justify-center">
-                    <img
-                        class="object-cover w-full h-full rounded-lg"
-                        src="{{ asset('images/lulu.jpg') }}"
-                        alt="Lulu">
+            <div x-show="showExtraWidgets" id="extra-widgets" class="flex-1 bg-red-200">
+                <div class="p-4 bg-neutral-100/50 rounded-lg shadow-md max-h-96">
+                    <div class="h-full flex items-center justify-center">
+                        <img
+                            class="object-cover w-full h-full rounded-lg"
+                            src="{{ asset('images/lulu.jpg') }}"
+                            alt="Lulu">
+                    </div>
                 </div>
             </div>
         </div>
@@ -34,3 +44,34 @@
     <livewire:background-image image="https://images.unsplash.com/photo-1512311734173-51a49c854e78?crop=entropy&amp;cs=srgb&amp;fm=jpg&amp;ixid=M3w3MjExMTd8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NDE2NjYyOTZ8&amp;ixlib=rb-4.0.3&amp;q=85"/>
 </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('home', () => ({
+                extraWidgetsHeight: 0,
+                showExtraWidgets: false,
+
+                init() {
+                    this.updateHeight();
+
+                    if (this.extraWidgetsHeight > 200) {
+                        this.showExtraWidgets = true;
+                    } else {
+                        this.showExtraWidgets = false;
+                    }
+
+                    window.addEventListener('resize', () => {
+                        this.updateHeight();
+                    });
+                },
+                updateHeight() {
+                    const height = document.getElementById('extra-widgets').clientHeight
+                    console.log('Height updated:', height);
+                    this.extraWidgetsHeight = height;
+                },
+            }));
+        })
+
+    </script>
+@endpush

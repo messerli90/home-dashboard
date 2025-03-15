@@ -11,9 +11,9 @@ export default defineConfig({
         tailwindcss(),
     ],
     server: {
-        host: true,
-        // hmr: {
-        //     host: '192.168.0.126',
-        // },
-    }
+        watch: {
+            usePolling: true, // Ensures changes are detected, especially in WSL, Docker, or network drives
+        },
+        hmr: true,
+    },
 });
