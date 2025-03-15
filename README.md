@@ -1,3 +1,7 @@
+## **Work in Progress**
+This repo is not stable, and should not be used yet
+
+
 # Home Dashboard
 
 This is a simple dashboard that I created to manage the family calendar, shopping list, and more. 
